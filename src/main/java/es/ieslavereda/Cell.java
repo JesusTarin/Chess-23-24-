@@ -43,6 +43,19 @@ public class Cell {
         return color;
     }
 
+    public void highlight(){
+        if(isEmpty()){
+            if(originalColor==Color.BLACK)
+                color = Color.HIGHLIGHT_BLACK;
+            else
+                color = Color.HIGHLIGHT_WHITE;
+        } else {
+            color = (originalColor==Color.BLACK)?Color.HIGHLIGHT_KILL_BLACK:Color.HIGHLIGHT_KILL_WHITE;
+        }
+    }
+
+    public void resetColor(){ color = originalColor;}
+
     @Override
     public String toString() {
         if(piece==null)

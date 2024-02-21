@@ -4,18 +4,77 @@ import com.diogonunes.jcolor.Attribute;
 
 import static com.diogonunes.jcolor.Ansi.colorize;
 
-public class Piece {
+public abstract class Piece {
     private Type type;
     private Cell cell;
 
     public Piece(Type type, Cell cell){
         this.type = type;
         this.cell = cell;
+        placePiece();
     }
+
+    protected void placePiece() {
+        if(cell!=null)
+            cell.setPiece(this);
+    }
+
+    public abstract Coordinate[] getNextMovements();
 
     public void setCell(Cell cell) {
         this.cell = cell;
     }
+
+    public Type getType() {
+        return type;
+    }
+
+    public Cell getCell() {
+        return cell;
+    }
+
+    public Color getColor(){
+        return type.getColor();
+    }
+
+    protected boolean canAddToNextMovements(Coordinate coordinate){
+        if(!cell.getBoard().contains(coordinate))
+            return false;
+        if(cell.getBoard().getCellAt(coordinate).isEmpty())
+            return true;
+        if(cell.getBoard().getCellAt(coordinate).getPiece().getColor()!=this.getColor())
+            return true;
+        return false;
+    }
+
+    public boolean canMoveTo(Coordinate coordinate){
+        Coordinate[] coordinates = getNextMovements();
+        for(Coordinate c:coordinates)
+            if(c.equals(coordinate))
+                return true;
+        return false;
+    }
+
+    public void remove(){
+        if(cell != null){
+            cell.setPiece(null);
+            cell=null;
+        }
+    }
+
+    public boolean moveTo(Coordinate coordinate){
+        if(!canMoveTo(coordinate))
+            return false;
+        Board board = cell.getBoard();
+        if(!board.getCellAt(coordinate).isEmpty())
+            board.getCellAt(coordinate).getPiece().remove();
+        remove();
+        setCell(board.getCellAt(coordinate));
+        placePiece();
+
+        return true;
+    }
+
 
     @Override
     public String toString() {

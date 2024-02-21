@@ -25,6 +25,17 @@ public class Board {
         return cells[c.getNumber()-1][c.getLetter()-'A'];
     }
 
+    public void highligh(Coordinate[] coordinates){
+        for(Coordinate coordinate:coordinates)
+            getCellAt(coordinate).highlight();
+    }
+
+    public void resetColor(){
+        for(Cell[] cellArray:cells)
+            for(Cell cell:cellArray)
+                cell.resetColor();
+    }
+
     @Override
     public String toString() {
         String aux = "    A  B  C  D  E  F  G  H\n";
