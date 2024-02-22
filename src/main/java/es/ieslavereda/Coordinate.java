@@ -1,5 +1,7 @@
 package es.ieslavereda;
 
+import java.util.Objects;
+
 public class Coordinate {
 
     private char letter;
@@ -52,4 +54,8 @@ public class Coordinate {
                 coordinate.number==this.number);
     }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(letter, number);
+    }
 }

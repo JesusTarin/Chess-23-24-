@@ -1,103 +1,109 @@
 package es.ieslavereda;
 
 public class Pawn extends Piece {
-    public Pawn(Board board, Coordinate coordinate, Type type){
-        super(type.getType(), board.getCellAt(coordinate));
+    public Pawn(Board board, Coordinate position, Type type) {
+        super(type.getType(), board.getCellAt(position));
+    }
+
+    @Override
+    public boolean moveTo(Coordinate coordinate) {
+
+        boolean moved = super.moveTo(coordinate);
+
+        if (getCell().getCoordinate().getNumber() == 1 || getCell().getCoordinate().getNumber() == 8) {
+            Cell cell = getCell();
+            remove();
+            if (getColor().equals(Color.BLACK))
+                new Queen(cell.getBoard(), cell.getCoordinate(), Queen.Type.BLACK);
+            else
+                new Queen(cell.getBoard(), cell.getCoordinate(), Queen.Type.WHITE);
+        }
+
+        return moved;
     }
 
     @Override
     public Coordinate[] getNextMovements() {
-        if(getColor()== Piece.Color.WHITE)
-            return getNextMovementsWhite();
-        return getNextMovementsBlack();
+        if (getColor() == Color.BLACK)
+            return getNextMovementsAsBlack();
+        else
+            return getNextMovementsAsWhite();
     }
 
-    @Override
-    public boolean moveTo(Coordinate coordinate){
-        if(!super.moveTo(coordinate))
-            return false;
-        //tengo que comprobarr si se transforma en reina
-        if(getCell().getCoordinate().getNumber()==8 ||
-                getCell().getCoordinate().getNumber()==1){
-            Cell auxCell = this.getCell();
-            this.remove();
-            if(getColor()== Piece.Color.BLACK)
-                new Queen(auxCell.getBoard(),coordinate, Queen.Type.BLACK);
-            else
-                new Queen(auxCell.getBoard(),coordinate, Queen.Type.WHITE);
-        }
-        return true;
-    }
-
-    public Coordinate[] getNextMovementsWhite(){
-        Coordinate[] nextMovements = new Coordinate[0];
-        Coordinate initialPosition = getCell().getCoordinate();
-        Coordinate coordinate;
+    private Coordinate[] getNextMovementsAsWhite() {
+        Coordinate[] posicionesCandidatas = new Coordinate[0];
+        Coordinate c;
+        Coordinate position = getCell().getCoordinate();
         Board board = getCell().getBoard();
 
-        //movimiento 1
-        coordinate = initialPosition.up();
-        if(board.contains(coordinate) && board.getCellAt(coordinate).getPiece()==null) {
-            nextMovements = Tool.add(coordinate, nextMovements);
-            //posición inicial
-            if(initialPosition.getNumber()==7){
-                coordinate=coordinate.up();
-                if(board.contains(coordinate) && board.getCellAt(coordinate).getPiece()==null)
-                    nextMovements = Tool.add(coordinate, nextMovements);
+        // posicion delante
+        c = position.up();
+
+        if (board.contains(c) && board.getCellAt(c).getPiece() == null)
+            posicionesCandidatas = Tool.add(c, posicionesCandidatas);
+
+        // avanza matando
+        c = position.up().left();
+        if (board.contains(c)
+                && (board.getCellAt(c).getPiece() != null && board.getCellAt(c).getPiece().getColor() != getColor()))
+            posicionesCandidatas = Tool.add(c, posicionesCandidatas);
+
+        c = position.up().right();
+        if (board.contains(c)
+                && (board.getCellAt(c).getPiece() != null && board.getCellAt(c).getPiece().getColor() != getColor()))
+            posicionesCandidatas = Tool.add(c, posicionesCandidatas);
+
+        // Si esta en la posicion inicial se le permite avanzar 2 posiciones
+        if (position.getNumber() == 2) {
+            c = position.up();
+            if (board.contains(c) && board.getCellAt(c).getPiece() == null) {
+                c = c.up();
+                if (board.contains(c) && board.getCellAt(c).getPiece() == null) {
+                    posicionesCandidatas = Tool.add(c, posicionesCandidatas);
+                }
             }
         }
-
-        //avanza matando
-        coordinate = initialPosition.diagonalUpRight();
-        if(board.contains(coordinate) && board.getCellAt(coordinate).getPiece()!=null &&
-            board.getCellAt(coordinate).getPiece().getColor()!= getColor())
-            nextMovements = Tool.add(coordinate,nextMovements);
-
-        coordinate = initialPosition.diagonalUpLeft();
-        if(board.contains(coordinate) && board.getCellAt(coordinate).getPiece()!=null &&
-                board.getCellAt(coordinate).getPiece().getColor()!= getColor())
-            nextMovements = Tool.add(coordinate,nextMovements);
-
-        return nextMovements;
+        return posicionesCandidatas;
     }
 
-    public Coordinate[] getNextMovementsBlack(){
-        Coordinate[] nextMovements = new Coordinate[0];
-        Coordinate initialPosition = getCell().getCoordinate();
-        Coordinate coordinate;
+    private Coordinate[] getNextMovementsAsBlack() {
+        Coordinate[] posicionesCandidatas = new Coordinate[0];
+        Coordinate c;
+        Coordinate position = getCell().getCoordinate();
         Board board = getCell().getBoard();
 
-        //movimiento 1
-        coordinate = initialPosition.down();
-        if(board.contains(coordinate) && board.getCellAt(coordinate).getPiece()==null) {
-            nextMovements = Tool.add(coordinate, nextMovements);
-            //posición inicial
-            if(initialPosition.getNumber()==2){
-                coordinate=coordinate.down();
-                if(board.contains(coordinate) && board.getCellAt(coordinate).getPiece()==null)
-                    nextMovements = Tool.add(coordinate, nextMovements);
+        // posicion delante
+        c = position.down();
+
+        if (board.contains(c) && board.getCellAt(c).getPiece() == null)
+            posicionesCandidatas = Tool.add(c, posicionesCandidatas);
+
+        // avanza matando
+        c = position.down().left();
+        if (board.contains(c)
+                && (board.getCellAt(c).getPiece() != null && board.getCellAt(c).getPiece().getColor() != getColor()))
+            posicionesCandidatas = Tool.add(c, posicionesCandidatas);
+
+        c = position.down().right();
+        if (board.contains(c)
+                && (board.getCellAt(c).getPiece() != null && board.getCellAt(c).getPiece().getColor() != getColor()))
+            posicionesCandidatas = Tool.add(c, posicionesCandidatas);
+
+        // Si esta en la posicion inicial se le permite avanzar 2 posiciones
+        if (position.getNumber() == 2) {
+            c = position.down();
+            if (board.contains(c) && board.getCellAt(c).getPiece() == null) {
+                c = c.down();
+                if (board.contains(c) && board.getCellAt(c).getPiece() == null) {
+                    posicionesCandidatas = Tool.add(c, posicionesCandidatas);
+                }
             }
         }
-
-        //avanza matando
-        coordinate = initialPosition.diagonalDownRight();
-        if(board.contains(coordinate) && board.getCellAt(coordinate).getPiece()!=null &&
-                board.getCellAt(coordinate).getPiece().getColor()!= getColor())
-            nextMovements = Tool.add(coordinate,nextMovements);
-
-        coordinate = initialPosition.diagonalDownLeft();
-        if(board.contains(coordinate) && board.getCellAt(coordinate).getPiece()!=null &&
-                board.getCellAt(coordinate).getPiece().getColor()!= getColor())
-            nextMovements = Tool.add(coordinate,nextMovements);
-
-        return nextMovements;
-
+        return posicionesCandidatas;
     }
 
     public enum Type {
-        BLACK(Piece.Type.BLACK_PAWN),
-        WHITE(Piece.Type.WHITE_PAWN);
-
+        BLACK(Piece.Type.BLACK_PAWN), WHITE(Piece.Type.WHITE_PAWN);
         private Piece.Type type;
 
         Type(Piece.Type type) {

@@ -16,11 +16,14 @@ public class Cell {
         this.board = board;
         this.coordinate = coordinate;
         this.piece = null;
-        this.originalColor=(((coordinate.getLetter()-'A')+(coordinate.getNumber()-1))%2==0)?Color.WHITE:Color.BLACK;
-        this.color=originalColor;
-    }
-    public boolean isEmpty(){
-        return piece==null;
+
+        if ((coordinate.getNumber() + coordinate.getLetter()) % 2 == 1) {
+            this.originalColor = Color.BLACK;
+        } else {
+            this.originalColor = Color.WHITE;
+        }
+        this.color = originalColor;
+
     }
 
     public Piece getPiece() {
@@ -39,32 +42,35 @@ public class Cell {
         this.piece = piece;
     }
 
+    public void highlight(){
+        if(originalColor== Color.WHITE)
+            this.color = (piece!=null)? Color.HIGHLIGHT_KILL_WHITE : Color.HIGHLIGHT_WHITE;
+        else
+            this.color = (piece!=null)? Color.HIGHLIGHT_KILL_BLACK : Color.HIGHLIGHT_BLACK;
+    }
+
+    public void removeHighLight(){
+        this.color = originalColor;
+    }
+
+    @Override
+    public String toString(){
+        if(piece==null){
+            return colorize("   ",color.getAttribute());
+        }else{
+            return colorize(" ",color.getAttribute())+piece+colorize(" ",color.getAttribute());
+        }
+    }
+
     public Color getColor() {
         return color;
     }
 
-    public void highlight(){
-        if(isEmpty()){
-            if(originalColor==Color.BLACK)
-                color = Color.HIGHLIGHT_BLACK;
-            else
-                color = Color.HIGHLIGHT_WHITE;
-        } else {
-            color = (originalColor==Color.BLACK)?Color.HIGHLIGHT_KILL_BLACK:Color.HIGHLIGHT_KILL_WHITE;
-        }
-    }
-
-    public void resetColor(){ color = originalColor;}
-
-    @Override
-    public String toString() {
-        if(piece==null)
-            return colorize("   ",color.getAttribute());
-        return colorize(" ",color.getAttribute())+piece+colorize(" ",color.getAttribute());
+    public boolean isEmpty() {
+        return piece==null;
     }
 
     public enum Color {
-        //put your task here
         WHITE(Attribute.BACK_COLOR(180,180,180)),
         BLACK(Attribute.BACK_COLOR(100,100,100)),
         HIGHLIGHT_KILL_WHITE(Attribute.BACK_COLOR(180,0,0)),
@@ -73,10 +79,13 @@ public class Cell {
         HIGHLIGHT_BLACK(Attribute.BACK_COLOR(130,130,0));
 
         private Attribute color;
-        Color(Attribute color){
-            this.color=color;
-        }
-        public Attribute getAttribute(){return color;}
 
+        Color(Attribute color) {
+            this.color = color;
+        }
+
+        public Attribute getAttribute() {
+            return color;
+        }
     }
 }
