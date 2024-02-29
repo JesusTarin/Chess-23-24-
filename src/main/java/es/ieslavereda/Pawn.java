@@ -1,5 +1,8 @@
 package es.ieslavereda;
 
+import java.util.LinkedHashSet;
+import java.util.Set;
+
 public class Pawn extends Piece {
     public Pawn(Board board, Coordinate position, Type type) {
         super(type.getType(), board.getCellAt(position));
@@ -23,15 +26,15 @@ public class Pawn extends Piece {
     }
 
     @Override
-    public Coordinate[] getNextMovements() {
+    public Set<Coordinate> getNextMovements() {
         if (getColor() == Color.BLACK)
             return getNextMovementsAsBlack();
         else
             return getNextMovementsAsWhite();
     }
 
-    private Coordinate[] getNextMovementsAsWhite() {
-        Coordinate[] posicionesCandidatas = new Coordinate[0];
+    private Set<Coordinate> getNextMovementsAsWhite() {
+        Set<Coordinate> posicionesCandidatas = new LinkedHashSet<>();
         Coordinate c;
         Coordinate position = getCell().getCoordinate();
         Board board = getCell().getBoard();
@@ -40,34 +43,34 @@ public class Pawn extends Piece {
         c = position.up();
 
         if (board.contains(c) && board.getCellAt(c).getPiece() == null)
-            posicionesCandidatas = Tool.add(c, posicionesCandidatas);
+            posicionesCandidatas.add(c);
 
         // avanza matando
         c = position.up().left();
         if (board.contains(c)
                 && (board.getCellAt(c).getPiece() != null && board.getCellAt(c).getPiece().getColor() != getColor()))
-            posicionesCandidatas = Tool.add(c, posicionesCandidatas);
+            posicionesCandidatas.add(c);
 
         c = position.up().right();
         if (board.contains(c)
                 && (board.getCellAt(c).getPiece() != null && board.getCellAt(c).getPiece().getColor() != getColor()))
-            posicionesCandidatas = Tool.add(c, posicionesCandidatas);
+            posicionesCandidatas.add(c);
 
         // Si esta en la posicion inicial se le permite avanzar 2 posiciones
-        if (position.getNumber() == 2) {
+        if (position.getNumber() == 7) {
             c = position.up();
             if (board.contains(c) && board.getCellAt(c).getPiece() == null) {
                 c = c.up();
                 if (board.contains(c) && board.getCellAt(c).getPiece() == null) {
-                    posicionesCandidatas = Tool.add(c, posicionesCandidatas);
+                    posicionesCandidatas.add(c);
                 }
             }
         }
         return posicionesCandidatas;
     }
 
-    private Coordinate[] getNextMovementsAsBlack() {
-        Coordinate[] posicionesCandidatas = new Coordinate[0];
+    private Set<Coordinate> getNextMovementsAsBlack() {
+        Set<Coordinate> posicionesCandidatas = new LinkedHashSet<>();
         Coordinate c;
         Coordinate position = getCell().getCoordinate();
         Board board = getCell().getBoard();
@@ -76,18 +79,18 @@ public class Pawn extends Piece {
         c = position.down();
 
         if (board.contains(c) && board.getCellAt(c).getPiece() == null)
-            posicionesCandidatas = Tool.add(c, posicionesCandidatas);
+            posicionesCandidatas.add(c);
 
         // avanza matando
         c = position.down().left();
         if (board.contains(c)
                 && (board.getCellAt(c).getPiece() != null && board.getCellAt(c).getPiece().getColor() != getColor()))
-            posicionesCandidatas = Tool.add(c, posicionesCandidatas);
+            posicionesCandidatas.add(c);
 
         c = position.down().right();
         if (board.contains(c)
                 && (board.getCellAt(c).getPiece() != null && board.getCellAt(c).getPiece().getColor() != getColor()))
-            posicionesCandidatas = Tool.add(c, posicionesCandidatas);
+            posicionesCandidatas.add(c);
 
         // Si esta en la posicion inicial se le permite avanzar 2 posiciones
         if (position.getNumber() == 2) {
@@ -95,7 +98,7 @@ public class Pawn extends Piece {
             if (board.contains(c) && board.getCellAt(c).getPiece() == null) {
                 c = c.down();
                 if (board.contains(c) && board.getCellAt(c).getPiece() == null) {
-                    posicionesCandidatas = Tool.add(c, posicionesCandidatas);
+                    posicionesCandidatas.add(c);
                 }
             }
         }

@@ -1,17 +1,20 @@
 package es.ieslavereda;
 
+import java.util.LinkedHashSet;
+import java.util.Set;
+
 public class Bishop extends Piece {
     public Bishop(Board board, Coordinate coordinate, Type type) {
         super(type.getType(), board.getCellAt(coordinate));
     }
 
     @Override
-    public Coordinate[] getNextMovements() {
+    public Set<Coordinate> getNextMovements() {
         return getNextMovementsAsBishop(this);
     }
 
-    public static Coordinate[] getNextMovementsAsBishop(Piece piece){
-        Coordinate[] nextMovements = new Coordinate[0];
+    public static Set<Coordinate> getNextMovementsAsBishop(Piece piece){
+        Set<Coordinate> nextMovements = new LinkedHashSet<>();
         Coordinate initialPosition = piece.getCell().getCoordinate();
         Coordinate coordinate;
         Board board = piece.getCell().getBoard();
@@ -24,14 +27,14 @@ public class Bishop extends Piece {
         do{
             coordinate=coordinate.diagonalUpLeft();
             if(piece.canAddToNextMovements(coordinate))
-                nextMovements = Tool.add(coordinate,nextMovements);
+                nextMovements.add(coordinate);
         } while(board.contains(coordinate) && board.getCellAt(coordinate).getPiece()==null);
 
         coordinate=initialPosition;
         do{
             coordinate=coordinate.diagonalDownLeft();
             if(piece.canAddToNextMovements(coordinate))
-                nextMovements = Tool.add(coordinate,nextMovements);
+                nextMovements.add(coordinate);
         } while(board.contains(coordinate) && board.getCellAt(coordinate).getPiece()==null);
 
         //diagonal derecha
@@ -39,14 +42,14 @@ public class Bishop extends Piece {
         do{
             coordinate=coordinate.diagonalUpRight();
             if(piece.canAddToNextMovements(coordinate))
-                nextMovements = Tool.add(coordinate,nextMovements);
+                nextMovements.add(coordinate);
         } while(board.contains(coordinate) && board.getCellAt(coordinate).getPiece()==null);
 
         coordinate=initialPosition;
         do{
             coordinate=coordinate.diagonalDownRight();
             if(piece.canAddToNextMovements(coordinate))
-                nextMovements = Tool.add(coordinate,nextMovements);
+                nextMovements.add(coordinate);
         } while(board.contains(coordinate) && board.getCellAt(coordinate).getPiece()==null);
 
         return nextMovements;

@@ -1,5 +1,8 @@
 package es.ieslavereda;
 
+import java.util.LinkedHashSet;
+import java.util.Set;
+
 public class Knight extends Piece {
 
     public Knight(Board board, Coordinate position, Type type) {
@@ -7,43 +10,43 @@ public class Knight extends Piece {
     }
 
     @Override
-    public Coordinate[] getNextMovements(){
-        Coordinate[] nextMovements = new Coordinate[0];
+    public Set<Coordinate> getNextMovements(){
+        Set<Coordinate> nextMovements = new LinkedHashSet<>();
         Coordinate initialPosition = getCell().getCoordinate();
         Coordinate coordinate;
 
         //Up
         coordinate = initialPosition.up().up().left();
         if(canAddToNextMovements(coordinate))
-            nextMovements = Tool.add(coordinate,nextMovements);
+            nextMovements.add(coordinate);
 
         coordinate = initialPosition.up().up().right();
         if(canAddToNextMovements(coordinate))
-            nextMovements = Tool.add(coordinate,nextMovements);
+            nextMovements.add(coordinate);
 
         //down
         coordinate = initialPosition.down().down().left();
         if(canAddToNextMovements(coordinate))
-            nextMovements = Tool.add(coordinate,nextMovements);
+            nextMovements.add(coordinate);
         coordinate = initialPosition.down().down().right();
         if(canAddToNextMovements(coordinate))
-            nextMovements = Tool.add(coordinate,nextMovements);
+            nextMovements.add(coordinate);
 
         //left
         coordinate = initialPosition.left().left().down();
         if(canAddToNextMovements(coordinate))
-            nextMovements = Tool.add(coordinate,nextMovements);
+            nextMovements.add(coordinate);
         coordinate = initialPosition.left().left().up();
         if(canAddToNextMovements(coordinate))
-            nextMovements = Tool.add(coordinate,nextMovements);
+            nextMovements.add(coordinate);
 
         //right
         coordinate = initialPosition.right().right().down();
         if(canAddToNextMovements(coordinate))
-            nextMovements = Tool.add(coordinate,nextMovements);
+            nextMovements.add(coordinate);
         coordinate = initialPosition.right().right().up();
         if(canAddToNextMovements(coordinate))
-            nextMovements = Tool.add(coordinate,nextMovements);
+            nextMovements.add(coordinate);
 
         return nextMovements;
 

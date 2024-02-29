@@ -2,6 +2,8 @@ package es.ieslavereda;
 
 import com.diogonunes.jcolor.Attribute;
 
+import java.util.Set;
+
 import static com.diogonunes.jcolor.Ansi.colorize;
 
 public abstract class Piece {
@@ -19,7 +21,7 @@ public abstract class Piece {
             cell.setPiece(this);
     }
 
-    public abstract Coordinate[] getNextMovements();
+    public abstract Set<Coordinate> getNextMovements();
 
     public void setCell(Cell cell) {
         this.cell = cell;
@@ -48,11 +50,8 @@ public abstract class Piece {
     }
 
     public boolean canMoveTo(Coordinate coordinate){
-        Coordinate[] coordinates = getNextMovements();
-        for(Coordinate c:coordinates)
-            if(c.equals(coordinate))
-                return true;
-        return false;
+        Set<Coordinate> coordinates = getNextMovements();
+        return coordinates.contains(coordinate);
     }
 
     public void remove(){

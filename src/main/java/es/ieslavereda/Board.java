@@ -1,8 +1,6 @@
 package es.ieslavereda;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class Board {
 
@@ -26,9 +24,8 @@ public class Board {
         return cells.get(c);
     }
 
-    public void highLight(Collection<Coordinate> coordinates) {
-        for (Coordinate c : coordinates)
-            getCellAt(c).highlight();
+    public void highLight(Set<Coordinate> coordinates) {
+        coordinates.stream().forEach(coordinate -> getCellAt(coordinate).highlight());
     }
 
     public void removeHighLight() {

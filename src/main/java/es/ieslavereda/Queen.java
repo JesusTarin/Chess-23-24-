@@ -1,20 +1,16 @@
 package es.ieslavereda;
 
+import java.util.Set;
+
 public class Queen extends Piece {
     public Queen(Board board, Coordinate coordinate, Type type){
         super(type.getType(), board.getCellAt(coordinate));
     }
 
     @Override
-    public Coordinate[] getNextMovements() {
-        Coordinate[] nextMovements = new Coordinate[0];
-        nextMovements = Bishop.getNextMovementsAsBishop(this);
-
-        Coordinate[] nextMovementsRook = new Coordinate[0];
-        nextMovementsRook=Rook.getNextMovementsAsRook(this);
-        for(Coordinate coordinate:nextMovementsRook)
-            nextMovements=Tool.add(coordinate,nextMovements);
-
+    public Set<Coordinate> getNextMovements() {
+        Set<Coordinate> nextMovements = Bishop.getNextMovementsAsBishop(this);
+        nextMovements.addAll(Rook.getNextMovementsAsRook(this));
         return nextMovements;
     }
 

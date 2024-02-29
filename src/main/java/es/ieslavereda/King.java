@@ -1,47 +1,50 @@
 package es.ieslavereda;
 
+import java.util.LinkedHashSet;
+import java.util.Set;
+
 public class King extends Piece {
     public King(Board board, Coordinate coordinate, Type type){
         super(type.getType(), board.getCellAt(coordinate));
     }
 
     @Override
-    public Coordinate[] getNextMovements() {
-        Coordinate[] nextMovements = new Coordinate[0];
+    public Set<Coordinate> getNextMovements() {
+        Set<Coordinate> nextMovements = new LinkedHashSet<>();
         Coordinate initialPosition = getCell().getCoordinate();
         Coordinate coordinate;
 
         coordinate = initialPosition.up();
         if(canAddToNextMovements(coordinate))
-            nextMovements = Tool.add(coordinate,nextMovements);
+            nextMovements.add(coordinate);
 
         coordinate = initialPosition.down();
         if(canAddToNextMovements(coordinate))
-            nextMovements = Tool.add(coordinate,nextMovements);
+            nextMovements.add(coordinate);
 
         coordinate = initialPosition.left();
         if(canAddToNextMovements(coordinate))
-            nextMovements = Tool.add(coordinate,nextMovements);
+            nextMovements.add(coordinate);
 
         coordinate = initialPosition.right();
         if(canAddToNextMovements(coordinate))
-            nextMovements = Tool.add(coordinate,nextMovements);
+            nextMovements.add(coordinate);
 
         coordinate = initialPosition.diagonalUpRight();
         if(canAddToNextMovements(coordinate))
-            nextMovements = Tool.add(coordinate,nextMovements);
+            nextMovements.add(coordinate);
 
         coordinate = initialPosition.diagonalUpLeft();
         if(canAddToNextMovements(coordinate))
-            nextMovements = Tool.add(coordinate,nextMovements);
+            nextMovements.add(coordinate);
 
         coordinate = initialPosition.diagonalDownRight();
         if(canAddToNextMovements(coordinate))
-            nextMovements = Tool.add(coordinate,nextMovements);
+            nextMovements.add(coordinate);
 
         coordinate = initialPosition.diagonalDownLeft();
         if(canAddToNextMovements(coordinate))
-            nextMovements = Tool.add(coordinate,nextMovements);
+            nextMovements.add(coordinate);
 
         return nextMovements;
     }

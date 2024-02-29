@@ -1,17 +1,20 @@
 package es.ieslavereda;
 
+import java.util.LinkedHashSet;
+import java.util.Set;
+
 public class Rook extends Piece {
     public Rook(Board board, Coordinate coordinate, Type type){
         super(type.getType(), board.getCellAt(coordinate));
     }
 
     @Override
-    public Coordinate[] getNextMovements() {
+    public Set<Coordinate> getNextMovements() {
         return getNextMovementsAsRook(this);
     }
 
-    public static Coordinate[] getNextMovementsAsRook(Piece piece){
-        Coordinate[] nextMovements = new Coordinate[0];
+    public static Set<Coordinate> getNextMovementsAsRook(Piece piece){
+        Set<Coordinate> nextMovements = new LinkedHashSet<>();
         Coordinate initialPosition = piece.getCell().getCoordinate();
         Coordinate coordinate;
         Board board = piece.getCell().getBoard();
@@ -24,7 +27,7 @@ public class Rook extends Piece {
         do{
             coordinate=coordinate.left();
             if(piece.canAddToNextMovements(coordinate))
-                nextMovements = Tool.add(coordinate,nextMovements);
+                nextMovements.add(coordinate);
         } while(board.contains(coordinate) && board.getCellAt(coordinate).getPiece()==null);
 
         //abajo
@@ -32,7 +35,7 @@ public class Rook extends Piece {
         do{
             coordinate=coordinate.down();
             if(piece.canAddToNextMovements(coordinate))
-                nextMovements = Tool.add(coordinate,nextMovements);
+                nextMovements.add(coordinate);
         } while(board.contains(coordinate) && board.getCellAt(coordinate).getPiece()==null);
 
         //derecha
@@ -40,7 +43,7 @@ public class Rook extends Piece {
         do{
             coordinate=coordinate.right();
             if(piece.canAddToNextMovements(coordinate))
-                nextMovements = Tool.add(coordinate,nextMovements);
+                nextMovements.add(coordinate);
         } while(board.contains(coordinate) && board.getCellAt(coordinate).getPiece()==null);
 
         //arriba
@@ -48,7 +51,7 @@ public class Rook extends Piece {
         do{
             coordinate=coordinate.up();
             if(piece.canAddToNextMovements(coordinate))
-                nextMovements = Tool.add(coordinate,nextMovements);
+                nextMovements.add(coordinate);
         } while(board.contains(coordinate) && board.getCellAt(coordinate).getPiece()==null);
 
         return nextMovements;
