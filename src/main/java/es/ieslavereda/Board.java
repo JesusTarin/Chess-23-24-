@@ -5,9 +5,11 @@ import java.util.*;
 public class Board {
 
     private Map<Coordinate, Cell> cells;
+    private String OS;
 
     public Board() {
         cells = new HashMap<>();
+        OS = Input.askOS();
 
         for (int row = 1; row <= 8; row++)
             for (char col = 'A'; col <= 'H'; col++)
@@ -17,6 +19,10 @@ public class Board {
 
     public boolean contains(Coordinate c) {
         return cells.containsKey(c);
+    }
+
+    public Map<Coordinate, Cell> getCells() {
+        return cells;
     }
 
     public Cell getCellAt(Coordinate c) {

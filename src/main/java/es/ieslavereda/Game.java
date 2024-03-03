@@ -18,15 +18,16 @@ public class Game {
         savePieces();
         while (pieces.get(Piece.Type.WHITE_KING)>0 && pieces.get(Piece.Type.BLACK_KING)>0) {
             coord1 = getCoordinate();
-            hasAPiece(coord1);
-            highlight(coord1);
+            highlight(hasAPiece(coord1));
             do {
                 coord2 = getCoordinate();
                 if (!(tablero.getCellAt(coord1).getPiece().canMoveTo(coord2))) {
                     System.err.println("The piece can't go there, try another coordinate to move or cancel with a 'c'");
                 }
             } while (!(tablero.getCellAt(coord1).getPiece().canMoveTo(coord2)));
-
+            removeHighLight();
+            tablero.getCellAt(coord1).getPiece().moveTo(coord2);
+            System.out.println(tablero);
         }
 
     }
@@ -86,12 +87,14 @@ public class Game {
         pieces.put(Piece.Type.WHITE_PAWN,8);
     }
 
-    private static void hasAPiece(Coordinate coord) {
+    private static Coordinate hasAPiece(Coordinate coord) {
         do {
             if ((tablero.getCellAt(coord).isEmpty())) {
                 System.err.println("This coordinate does not have a piece");
+                coord = getCoordinate();
             }
         } while (tablero.getCellAt(coord).isEmpty());
+        return coord;
     }
 
     private static void highlight(Coordinate coord) {
@@ -99,9 +102,10 @@ public class Game {
         System.out.println(tablero);
     }
 
-    private static void removeHighlight(Set<Coordinate> coords) {
-
+    public static void removeHighLight() {
+        tablero.getCells().values().stream().forEach(cell -> cell.removeHighLight());
     }
+
 
 }
 

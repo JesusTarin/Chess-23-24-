@@ -19,5 +19,16 @@ public class Input {
         return new Coordinate((coord.charAt(0)+"").toUpperCase().charAt(0), Integer.parseInt(coord.charAt(1)+""));
     }
 
+    public static String askOS() {
+        Scanner sc = new Scanner(System.in);
+        String SO;
+        do {
+            System.out.println("Do you use linux (l) or windows (w)");
+            SO = sc.nextLine();
+            if (SO != "w" || SO != "l") {
+                System.err.println("Wrong OS");
+            }
+        } while (SO != "w" || SO != "l");
+    }
 
 }
