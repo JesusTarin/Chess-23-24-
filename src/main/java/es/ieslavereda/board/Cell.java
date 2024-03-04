@@ -1,6 +1,7 @@
-package es.ieslavereda;
+package es.ieslavereda.board;
 
 import com.diogonunes.jcolor.Attribute;
+import es.ieslavereda.piece.Piece;
 
 import static com.diogonunes.jcolor.Ansi.colorize;
 

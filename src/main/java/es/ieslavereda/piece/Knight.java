@@ -1,4 +1,7 @@
-package es.ieslavereda;
+package es.ieslavereda.piece;
+
+import es.ieslavereda.board.Board;
+import es.ieslavereda.board.Coordinate;
 
 import java.util.LinkedHashSet;
 import java.util.Set;

@@ -1,19 +1,22 @@
-package es.ieslavereda;
+package es.ieslavereda.piece;
+
+import es.ieslavereda.board.Board;
+import es.ieslavereda.board.Coordinate;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-public class Bishop extends Piece {
-    public Bishop(Board board, Coordinate coordinate, Type type) {
+public class Rook extends Piece {
+    public Rook(Board board, Coordinate coordinate, Type type){
         super(type.getType(), board.getCellAt(coordinate));
     }
 
     @Override
     public Set<Coordinate> getNextMovements() {
-        return getNextMovementsAsBishop(this);
+        return getNextMovementsAsRook(this);
     }
 
-    public static Set<Coordinate> getNextMovementsAsBishop(Piece piece){
+    public static Set<Coordinate> getNextMovementsAsRook(Piece piece){
         Set<Coordinate> nextMovements = new LinkedHashSet<>();
         Coordinate initialPosition = piece.getCell().getCoordinate();
         Coordinate coordinate;
@@ -22,32 +25,34 @@ public class Bishop extends Piece {
         if(initialPosition==null)
             return nextMovements;
 
-        //diagonal izquierda
+        //izquierda
         coordinate=initialPosition;
         do{
-            coordinate=coordinate.diagonalUpLeft();
+            coordinate=coordinate.left();
             if(piece.canAddToNextMovements(coordinate))
                 nextMovements.add(coordinate);
         } while(board.contains(coordinate) && board.getCellAt(coordinate).getPiece()==null);
 
+        //abajo
         coordinate=initialPosition;
         do{
-            coordinate=coordinate.diagonalDownLeft();
+            coordinate=coordinate.down();
             if(piece.canAddToNextMovements(coordinate))
                 nextMovements.add(coordinate);
         } while(board.contains(coordinate) && board.getCellAt(coordinate).getPiece()==null);
 
-        //diagonal derecha
+        //derecha
         coordinate=initialPosition;
         do{
-            coordinate=coordinate.diagonalUpRight();
+            coordinate=coordinate.right();
             if(piece.canAddToNextMovements(coordinate))
                 nextMovements.add(coordinate);
         } while(board.contains(coordinate) && board.getCellAt(coordinate).getPiece()==null);
 
+        //arriba
         coordinate=initialPosition;
         do{
-            coordinate=coordinate.diagonalDownRight();
+            coordinate=coordinate.up();
             if(piece.canAddToNextMovements(coordinate))
                 nextMovements.add(coordinate);
         } while(board.contains(coordinate) && board.getCellAt(coordinate).getPiece()==null);
@@ -57,8 +62,8 @@ public class Bishop extends Piece {
     }
 
     public enum Type {
-        BLACK(Piece.Type.BLACK_BISHOP),
-        WHITE(Piece.Type.WHITE_BISHOP);
+        BLACK(Piece.Type.BLACK_ROOK),
+        WHITE(Piece.Type.WHITE_ROOK);
 
         private Piece.Type type;
 

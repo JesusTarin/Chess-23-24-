@@ -1,15 +1,22 @@
-package es.ieslavereda;
+package es.ieslavereda.board;
 
 import java.util.*;
+
+import static com.diogonunes.jcolor.Ansi.colorize;
+
+/*
+El codigo comentado es porque he intentado que en windows se vea bien, pero no sirve
+ */
+
 
 public class Board {
 
     private Map<Coordinate, Cell> cells;
-    private String OS;
+    //private String OS;
 
     public Board() {
         cells = new HashMap<>();
-        OS = Input.askOS();
+        //OS = Input.askOS(); Esto preguntaba si tu sistema operativo era windows
 
         for (int row = 1; row <= 8; row++)
             for (char col = 'A'; col <= 'H'; col++)
@@ -45,9 +52,18 @@ public class Board {
 
         for (int row = 1; row <= 8; row++) {
             aux += " " + row + " ";
-            for (char col = 'A'; col <= 'H'; col++)
+            for (char col = 'A'; col <= 'H'; col++) {
                 aux += cells.get(new Coordinate(col, row));
+                /*
+                Aqui se añadia un espacio en las casillas vacias si tu SO era windows
+                para que las casillas vacias fueran igual de grandes,
+                pero se pasan del tamaño de las casillas ocupadas
 
+                if (cells.get(new Coordinate(col, row)).isEmpty() && OS.equalsIgnoreCase("w")) {
+                    aux += colorize(" ",cells.get(new Coordinate(col,row)).getColor().getAttribute());
+                }
+                 */
+            }
             aux += " " + row + "\n";
         }
         aux += "    A  B  C  D  E  F  G  H";

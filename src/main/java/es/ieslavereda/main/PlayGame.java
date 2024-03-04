@@ -1,6 +1,6 @@
-package es.ieslavereda;
+package es.ieslavereda.main;
 
-public class Main {
+public class PlayGame {
     public static void main(String[] args) {
 
     Game.start();

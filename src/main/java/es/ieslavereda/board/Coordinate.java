@@ -1,4 +1,4 @@
-package es.ieslavereda;
+package es.ieslavereda.board;
 
 import java.util.Objects;
 

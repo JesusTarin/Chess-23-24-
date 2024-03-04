@@ -1,4 +1,6 @@
-package es.ieslavereda;
+package es.ieslavereda.tools;
+
+import es.ieslavereda.board.Coordinate;
 
 import java.util.Arrays;
 
