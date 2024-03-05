@@ -4,6 +4,9 @@ import es.ieslavereda.board.Board;
 import es.ieslavereda.board.Coordinate;
 import es.ieslavereda.piece.*;
 import es.ieslavereda.tools.Input;
+import static com.diogonunes.jcolor.Ansi.colorize;
+import com.diogonunes.jcolor.Attribute;
+
 
 import java.util.Map;
 import java.util.TreeMap;
@@ -19,6 +22,7 @@ public class Game {
         Piece.Color turn = Piece.Color.WHITE;
         Coordinate coord1;
         Coordinate coord2;
+        Board.askColors();
         startBoard();
         savePieces();
         while (pieces.get(Piece.Type.WHITE_KING)>0 && pieces.get(Piece.Type.BLACK_KING)>0) {
@@ -48,7 +52,7 @@ public class Game {
             do { //Loop until the coord is in the possible moves or until the player cancels de move
                 coord2 = getCoordinate();
                 if (!(board.getCellAt(coord1).getPiece().canMoveTo(coord2))) {
-                    System.err.println("The piece can't go there, try another coordinate to move or cancel writing 'a0'");
+                    System.err.println("The piece can't go there, try another coordinate to move or cancel writing where the piece is");
                 }
             } while (!(board.getCellAt(coord1).getPiece().canMoveTo(coord2)) || board.getCellAt(coord1).getPiece().getColor()!=turn);
 
@@ -62,7 +66,15 @@ public class Game {
                 turn = Piece.Color.WHITE;
             }
         }
-
+        if (pieces.get(Piece.Type.WHITE_KING)==0) {
+            System.out.println(colorize(colorize("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" +
+                    "\nTHE WHITE KING DIED, BLACKS WIN " +
+                    "\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~",Attribute.BACK_COLOR(0,0,0)),Attribute.TEXT_COLOR(255,255,255)));
+        } else {
+            System.out.println(colorize(colorize("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" +
+                    "\nTHE BLACK KING DIED, WHITES WIN " +
+                    "\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~",Attribute.BACK_COLOR(255,255,255)),Attribute.TEXT_COLOR(0,0,0)));
+        }
     }
 
     private static Coordinate getCoordinate(){
@@ -72,8 +84,8 @@ public class Game {
     private static void startBoard() {
         Queen queen1 = new Queen(board,new Coordinate('D',1), Queen.Type.BLACK);
         Queen queen2 = new Queen(board,new Coordinate('D',8), Queen.Type.WHITE);
-        King king1 = new King(board,new Coordinate('E',1), King.Type.BLACK);
-        King king2 = new King(board,new Coordinate('E',8), King.Type.WHITE);
+        King king1 = new King(board,new Coordinate('E',4), King.Type.BLACK);
+        King king2 = new King(board,new Coordinate('E',5), King.Type.WHITE);
         Rook rook1 = new Rook(board,new Coordinate('A',1), Rook.Type.BLACK);
         Rook rook2 = new Rook(board,new Coordinate('H',1), Rook.Type.BLACK);
         Rook rook3 = new Rook(board,new Coordinate('A',8), Rook.Type.WHITE);
@@ -120,13 +132,17 @@ public class Game {
         pieces.put(Piece.Type.WHITE_PAWN,8);
     }
 
+    public static void killPiece(Piece piece) {
+        pieces.put(piece.getType(), pieces.get(piece.getType())-1);
+    }
+
     private static void highlight(Coordinate coord) {
         board.highLight(board.getCellAt(coord).getPiece().getNextMovements());
         System.out.println(board);
     }
 
     public static void removeHighLight() {
-        board.getCells().values().stream().forEach(cell -> cell.removeHighLight());
+        board.getCells().values().forEach(cell -> cell.removeHighLight());
     }
 
 

@@ -4,6 +4,7 @@ import com.diogonunes.jcolor.Attribute;
 import es.ieslavereda.board.Board;
 import es.ieslavereda.board.Cell;
 import es.ieslavereda.board.Coordinate;
+import es.ieslavereda.main.Game;
 
 import java.util.Set;
 
@@ -68,8 +69,10 @@ public abstract class Piece {
         if(!canMoveTo(coordinate))
             return false;
         Board board = cell.getBoard();
-        if(!board.getCellAt(coordinate).isEmpty())
+        if(!board.getCellAt(coordinate).isEmpty()) {
+            Game.killPiece(board.getCellAt(coordinate).getPiece());
             board.getCellAt(coordinate).getPiece().remove();
+        }
         remove();
         setCell(board.getCellAt(coordinate));
         placePiece();

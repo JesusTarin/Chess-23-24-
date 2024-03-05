@@ -12,19 +12,28 @@ public class Cell {
     private Coordinate coordinate;
     private Color originalColor;
     private Color color;
+    private int[] colors;
 
     public Cell(Board board, Coordinate coordinate) {
         this.board = board;
         this.coordinate = coordinate;
         this.piece = null;
+        colors = new int[3];
 
         if ((coordinate.getNumber() + coordinate.getLetter()) % 2 == 1) {
             this.originalColor = Color.BLACK;
+            colors[0] = 180;
+            colors[1] = 180;
+            colors[2] = 180;
         } else {
             this.originalColor = Color.WHITE;
         }
         this.color = originalColor;
 
+    }
+
+    public void setColors(int[] colors) {
+        this.colors = colors;
     }
 
     public Piece getPiece() {

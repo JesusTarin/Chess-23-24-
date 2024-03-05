@@ -1,5 +1,7 @@
 package es.ieslavereda.board;
 
+import com.diogonunes.jcolor.Attribute;
+
 import java.util.*;
 
 import static com.diogonunes.jcolor.Ansi.colorize;
@@ -16,12 +18,52 @@ public class Board {
 
     public Board() {
         cells = new HashMap<>();
-        //OS = Input.askOS(); Esto preguntaba si tu sistema operativo era windows
+        //OS = Input.askOS(); //Esto preguntaba si tu sistema operativo era windows
 
-        for (int row = 1; row <= 8; row++)
+        for (int row = 8; row >= 1; row--)
             for (char col = 'A'; col <= 'H'; col++)
                 cells.put(new Coordinate(col, row), new Cell(this, new Coordinate(col, row)));
 
+    }
+
+    public void askColors() {
+        Scanner sc = new Scanner(System.in);
+        String color = "";
+        int red=0,green=0,blue=0;
+        boolean loop = true;
+        System.out.println("- Write 'c' to use custom colors on the board\n- Write 'd' o use default colors");
+        do {
+            try {
+                color = sc.nextLine();
+                if (color.charAt(0)=='c' || color.charAt(0)=='d') {
+                    loop = false;
+                } else {
+                    System.out.println("- Write 'c' to use custom colors on the board (RGB)\n- Write 'd' o use default colors (grey tones)");
+                }
+            } catch (StringIndexOutOfBoundsException e) {
+                System.out.println("Wrong input");
+            }
+        } while (loop);
+        loop = true;
+        if (color.charAt(0)=='c') {
+            do {
+                System.out.println("Introduce the RGB color numbers: ");
+                try {
+                    System.out.println("Red:");
+                    red = sc.nextInt();
+                    System.out.println("Green:");
+                    green = sc.nextInt();
+                    System.out.println("Blue:");
+                    blue = sc.nextInt();
+                    if ((red>=0 && red<=255) && (green>=0 && green<=255) && (blue>=0 && blue<=255)) {
+                        loop=false;
+                        this.getCellAt(new Coordinate('c',0)).setColors(new int[]{red,green,blue});
+                    }
+                } catch (InputMismatchException e) {
+                    System.out.println("Wrong codes");
+                }
+            } while (loop);
+        }
     }
 
     public boolean contains(Coordinate c) {
@@ -48,15 +90,15 @@ public class Board {
 
     @Override
     public String toString() {
-        String aux = "    A  B  C  D  E  F  G  H\n";
+        String aux = colorize("    A  B  C  D  E  F  G  H    \n", Attribute.BACK_COLOR(154,100,19));
 
         for (int row = 1; row <= 8; row++) {
-            aux += " " + row + " ";
+            aux += colorize(" " + row + " ", Attribute.BACK_COLOR(154,100,19));
             for (char col = 'A'; col <= 'H'; col++) {
                 aux += cells.get(new Coordinate(col, row));
                 /*
-                Aqui se añadia un espacio en las casillas vacias si tu SO era windows
-                para que las casillas vacias fueran igual de grandes,
+                Aquí se añade un espacio en las casillas vacías si tu SO era windows
+                para que fueran igual de grandes que las que tienen piezas,
                 pero se pasan del tamaño de las casillas ocupadas
 
                 if (cells.get(new Coordinate(col, row)).isEmpty() && OS.equalsIgnoreCase("w")) {
@@ -64,9 +106,9 @@ public class Board {
                 }
                  */
             }
-            aux += " " + row + "\n";
+            aux += colorize(" " + row + " \n", Attribute.BACK_COLOR(154,100,19));
         }
-        aux += "    A  B  C  D  E  F  G  H";
+        aux += colorize("    A  B  C  D  E  F  G  H    ", Attribute.BACK_COLOR(154,100,19));
         return aux;
     }
 }
