@@ -1,6 +1,6 @@
-package es.ieslavereda.tools;
+package es.ieslavereda.controller;
 
-import es.ieslavereda.board.Coordinate;
+import es.ieslavereda.model.board.Coordinate;
 
 import java.util.Scanner;
 
@@ -26,17 +26,5 @@ public class Input {
         return new Coordinate('a',0);
     }
 
-    public static String askOS() {
-        Scanner sc = new Scanner(System.in);
-        String OS;
-        do {
-            System.out.println("Do you use linux (l) or windows (w)");
-            OS = sc.nextLine();
-            if (!(OS.equalsIgnoreCase("w") || (OS.equalsIgnoreCase("l")))) {
-                System.err.println("Wrong OS");
-            }
-        } while (!(OS.equalsIgnoreCase("w") || (OS.equalsIgnoreCase("l"))));
-        return OS;
-    }
 
 }

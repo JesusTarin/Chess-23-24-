@@ -1,10 +1,10 @@
-package es.ieslavereda.piece;
+package es.ieslavereda.model.piece;
 
 import com.diogonunes.jcolor.Attribute;
-import es.ieslavereda.board.Board;
-import es.ieslavereda.board.Cell;
-import es.ieslavereda.board.Coordinate;
-import es.ieslavereda.main.Game;
+import es.ieslavereda.model.board.Board;
+import es.ieslavereda.model.board.Cell;
+import es.ieslavereda.model.board.Coordinate;
+import es.ieslavereda.vista.Game;
 
 import java.util.Set;
 

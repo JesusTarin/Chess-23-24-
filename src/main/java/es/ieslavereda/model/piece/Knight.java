@@ -1,69 +1,71 @@
-package es.ieslavereda.piece;
+package es.ieslavereda.model.piece;
 
-import es.ieslavereda.board.Board;
-import es.ieslavereda.board.Coordinate;
+import es.ieslavereda.model.board.Board;
+import es.ieslavereda.model.board.Coordinate;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-public class King extends Piece {
-    public King(Board board, Coordinate coordinate, Type type){
-        super(type.getType(), board.getCellAt(coordinate));
+public class Knight extends Piece {
+
+    public Knight(Board board, Coordinate position, Type type) {
+        super(type.getType(), board.getCellAt(position));
     }
 
     @Override
-    public Set<Coordinate> getNextMovements() {
+    public Set<Coordinate> getNextMovements(){
         Set<Coordinate> nextMovements = new LinkedHashSet<>();
         Coordinate initialPosition = getCell().getCoordinate();
         Coordinate coordinate;
 
-        coordinate = initialPosition.up();
+        //Up
+        coordinate = initialPosition.up().up().left();
         if(canAddToNextMovements(coordinate))
             nextMovements.add(coordinate);
 
-        coordinate = initialPosition.down();
+        coordinate = initialPosition.up().up().right();
         if(canAddToNextMovements(coordinate))
             nextMovements.add(coordinate);
 
-        coordinate = initialPosition.left();
+        //down
+        coordinate = initialPosition.down().down().left();
+        if(canAddToNextMovements(coordinate))
+            nextMovements.add(coordinate);
+        coordinate = initialPosition.down().down().right();
         if(canAddToNextMovements(coordinate))
             nextMovements.add(coordinate);
 
-        coordinate = initialPosition.right();
+        //left
+        coordinate = initialPosition.left().left().down();
+        if(canAddToNextMovements(coordinate))
+            nextMovements.add(coordinate);
+        coordinate = initialPosition.left().left().up();
         if(canAddToNextMovements(coordinate))
             nextMovements.add(coordinate);
 
-        coordinate = initialPosition.diagonalUpRight();
+        //right
+        coordinate = initialPosition.right().right().down();
         if(canAddToNextMovements(coordinate))
             nextMovements.add(coordinate);
-
-        coordinate = initialPosition.diagonalUpLeft();
-        if(canAddToNextMovements(coordinate))
-            nextMovements.add(coordinate);
-
-        coordinate = initialPosition.diagonalDownRight();
-        if(canAddToNextMovements(coordinate))
-            nextMovements.add(coordinate);
-
-        coordinate = initialPosition.diagonalDownLeft();
+        coordinate = initialPosition.right().right().up();
         if(canAddToNextMovements(coordinate))
             nextMovements.add(coordinate);
 
         return nextMovements;
+
     }
 
-    public enum Type{
-        BLACK(Piece.Type.BLACK_KING),
-        WHITE(Piece.Type.WHITE_KING);
-
+    public enum Type {
+        BLACK(Piece.Type.BLACK_KNIGHT),
+        WHITE(Piece.Type.WHITE_KNIGHT);
         private Piece.Type type;
-        Type(Piece.Type type){
-            this.type=type;
+
+        Type(Piece.Type type) {
+            this.type = type;
         }
 
         public Piece.Type getType() {
             return type;
         }
     }
-
 }

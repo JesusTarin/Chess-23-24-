@@ -1,9 +1,9 @@
-package es.ieslavereda.main;
+package es.ieslavereda.vista;
 
-import es.ieslavereda.board.Board;
-import es.ieslavereda.board.Coordinate;
-import es.ieslavereda.piece.*;
-import es.ieslavereda.tools.Input;
+import es.ieslavereda.model.board.Board;
+import es.ieslavereda.model.board.Coordinate;
+import es.ieslavereda.model.piece.*;
+import es.ieslavereda.controller.Input;
 import static com.diogonunes.jcolor.Ansi.colorize;
 import com.diogonunes.jcolor.Attribute;
 
@@ -22,11 +22,10 @@ public class Game {
         Piece.Color turn = Piece.Color.WHITE;
         Coordinate coord1;
         Coordinate coord2;
-        Board.askColors();
         startBoard();
         savePieces();
         while (pieces.get(Piece.Type.WHITE_KING)>0 && pieces.get(Piece.Type.BLACK_KING)>0) {
-            System.out.println(">-- " + turn + "'S TURN --<"); //Print the turn
+            System.out.println("------------------------\n|>--- " + turn + "'S TURN ---<|\n------------------------"); //Print the turn
 
             do { //This won't stop until the coord has a piece, and the color of that piece is the correct one
                 //Is the coord on the board?
@@ -56,7 +55,7 @@ public class Game {
                 }
             } while (!(board.getCellAt(coord1).getPiece().canMoveTo(coord2)) || board.getCellAt(coord1).getPiece().getColor()!=turn);
 
-            removeHighLight();
+            removeHighLight(); //Remove the movements highlight
             board.getCellAt(coord1).getPiece().moveTo(coord2);
             System.out.println(board);
 
@@ -66,6 +65,7 @@ public class Game {
                 turn = Piece.Color.WHITE;
             }
         }
+        //Print the winner
         if (pieces.get(Piece.Type.WHITE_KING)==0) {
             System.out.println(colorize(colorize("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" +
                     "\nTHE WHITE KING DIED, BLACKS WIN " +

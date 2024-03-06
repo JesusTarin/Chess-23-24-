@@ -1,7 +1,7 @@
-package es.ieslavereda.board;
+package es.ieslavereda.model.board;
 
 import com.diogonunes.jcolor.Attribute;
-import es.ieslavereda.piece.Piece;
+import es.ieslavereda.model.piece.Piece;
 
 import static com.diogonunes.jcolor.Ansi.colorize;
 

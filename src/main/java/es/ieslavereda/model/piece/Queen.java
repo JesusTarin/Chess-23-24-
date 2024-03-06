@@ -1,7 +1,7 @@
-package es.ieslavereda.piece;
+package es.ieslavereda.model.piece;
 
-import es.ieslavereda.board.Board;
-import es.ieslavereda.board.Coordinate;
+import es.ieslavereda.model.board.Board;
+import es.ieslavereda.model.board.Coordinate;
 
 import java.util.Set;
 
