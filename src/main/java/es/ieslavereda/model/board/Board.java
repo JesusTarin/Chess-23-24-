@@ -40,19 +40,18 @@ public class Board {
         cells.values().stream().forEach(cell -> cell.removeHighLight());
     }
 
-
     @Override
     public String toString() {
-        String aux = colorize("    A  B  C  D  E  F  G  H    \n", Attribute.BACK_COLOR(0,0,0));
+        String aux = colorize(colorize("    A  B  C  D  E  F  G  H    \n", Attribute.BACK_COLOR(0,0,0)), Attribute.TEXT_COLOR(255,255,255));
 
         for (int row = 1; row <= 8; row++) {
-            aux += colorize(" " + row + " ", Attribute.BACK_COLOR(0,0,0));
+            aux += colorize(colorize(" " + row + " ", Attribute.BACK_COLOR(0,0,0)), Attribute.TEXT_COLOR(255,255,255));
             for (char col = 'A'; col <= 'H'; col++) {
                 aux += cells.get(new Coordinate(col, row));
             }
-            aux += colorize(" " + row + " \n", Attribute.BACK_COLOR(0,0,0));
+            aux += colorize(colorize(" " + row + " \n", Attribute.BACK_COLOR(0,0,0)), Attribute.TEXT_COLOR(255,255,255));
         }
-        aux += colorize("    A  B  C  D  E  F  G  H    ", Attribute.BACK_COLOR(0,0,0));
+        aux += colorize(colorize("    A  B  C  D  E  F  G  H    ", Attribute.BACK_COLOR(0,0,0)), Attribute.TEXT_COLOR(255,255,255));
         return aux;
     }
 }

@@ -4,7 +4,7 @@ import com.diogonunes.jcolor.Attribute;
 import es.ieslavereda.model.board.Board;
 import es.ieslavereda.model.board.Cell;
 import es.ieslavereda.model.board.Coordinate;
-import es.ieslavereda.vista.Game;
+import es.ieslavereda.view.Game;
 
 import java.util.Set;
 
@@ -55,6 +55,7 @@ public abstract class Piece {
 
     public boolean canMoveTo(Coordinate coordinate){
         Set<Coordinate> coordinates = getNextMovements();
+        coordinates.add(this.getCell().getCoordinate());
         return coordinates.contains(coordinate);
     }
 

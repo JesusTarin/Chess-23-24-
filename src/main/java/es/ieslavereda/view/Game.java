@@ -1,6 +1,8 @@
-package es.ieslavereda.vista;
+package es.ieslavereda.view;
 
+import es.ieslavereda.controller.SaveGame;
 import es.ieslavereda.model.board.Board;
+import es.ieslavereda.model.board.Cell;
 import es.ieslavereda.model.board.Coordinate;
 import es.ieslavereda.model.piece.*;
 import es.ieslavereda.controller.Input;
@@ -8,13 +10,13 @@ import static com.diogonunes.jcolor.Ansi.colorize;
 import com.diogonunes.jcolor.Attribute;
 
 
+import java.io.IOException;
 import java.util.Map;
 import java.util.TreeMap;
 
 public class Game {
 
     private static Map<Piece.Type, Integer> pieces = new TreeMap<>();
-
     private static Board board = new Board();
 
 
@@ -24,40 +26,51 @@ public class Game {
         Coordinate coord2;
         startBoard();
         savePieces();
-        while (pieces.get(Piece.Type.WHITE_KING)>0 && pieces.get(Piece.Type.BLACK_KING)>0) {
-            System.out.println("------------------------\n|>--- " + turn + "'S TURN ---<|\n------------------------"); //Print the turn
+        while ((pieces.get(Piece.Type.WHITE_KING)>0 && pieces.get(Piece.Type.BLACK_KING)>0)) {
+            try {
+                SaveGame.save(board);
+            } catch (IOException e) {
+                System.out.println("Can't save the game");
+            }
+            do { //Loop in case you cancel the move
+                System.out.println("------------------------\n|     " + turn + "'S TURN     |\n------------------------"); //Print the turn
 
-            do { //This won't stop until the coord has a piece, and the color of that piece is the correct one
-                //Is the coord on the board?
-                coord1 = getCoordinate();
-                while (!board.contains(coord1)) { //It is not
-                    System.err.println("This coordinate is not in the board, try again");
+                do { //This won't stop until the coord has a piece, and the color of that piece is the correct one
+                    //Is the coord on the board?
                     coord1 = getCoordinate();
-                }
-                //Now it is
-                //Is the cell empty?
-                if (!board.getCellAt(coord1).isEmpty()) { //It is not empty
-                    if (board.getCellAt(coord1).getPiece().getColor()!=turn) { //If the piece has the wrong color
-                        System.err.println("This piece is not " + turn.toString().toLowerCase() + ", try with the other color");
+                    while (!board.contains(coord1)) { //It is not
+                        System.err.println("This coordinate is not in the board, try again");
+                        coord1 = getCoordinate();
                     }
-                } else { //The cell is empty
-                    System.err.println("This cell does not have a piece");
+                    //Now it is
+                    //Is the cell empty?
+                    if (!board.getCellAt(coord1).isEmpty()) { //It is not empty
+                        if (board.getCellAt(coord1).getPiece().getColor() != turn) { //If the piece has the wrong color
+                            System.err.println("This piece is not " + turn.toString().toLowerCase() + ", try with the other color");
+                        }
+                    } else { //The cell is empty
+                        System.err.println("This cell does not have a piece");
+                    }
+                } while (board.getCellAt(coord1).isEmpty() || board.getCellAt(coord1).getPiece().getColor() != turn);
+                //Everything is correct
+
+                highlight(coord1); //Highlight the possible moves
+
+                do { //Loop until the coord is in the possible moves or until the player cancels de move
+                    coord2 = getCoordinate();
+                    if (!(board.getCellAt(coord1).getPiece().canMoveTo(coord2))) { //If the piece can not move there
+                        System.err.println("The piece can't go there, try another coordinate to move or cancel writing where the piece is");
+                    }
+                } while (!(board.getCellAt(coord1).getPiece().canMoveTo(coord2)) || board.getCellAt(coord1).getPiece().getColor() != turn);
+                removeHighLight(); //Remove the movements highlight
+                if (coord1.equals(coord2)) {
+                    System.out.println(board);
+                    System.out.println("Movement canceled");
                 }
-            } while (board.getCellAt(coord1).isEmpty() || board.getCellAt(coord1).getPiece().getColor()!=turn);
-            //Everything is correct
+            } while (coord1.equals(coord2));
 
-            highlight(coord1); //Highlight the possible moves
-
-            do { //Loop until the coord is in the possible moves or until the player cancels de move
-                coord2 = getCoordinate();
-                if (!(board.getCellAt(coord1).getPiece().canMoveTo(coord2))) {
-                    System.err.println("The piece can't go there, try another coordinate to move or cancel writing where the piece is");
-                }
-            } while (!(board.getCellAt(coord1).getPiece().canMoveTo(coord2)) || board.getCellAt(coord1).getPiece().getColor()!=turn);
-
-            removeHighLight(); //Remove the movements highlight
-            board.getCellAt(coord1).getPiece().moveTo(coord2);
-            System.out.println(board);
+            board.getCellAt(coord1).getPiece().moveTo(coord2); //Move the piece
+            System.out.println(board); // Print the board
 
             if (turn.equals(Piece.Color.WHITE)){
                 turn = Piece.Color.BLACK;
@@ -65,16 +78,7 @@ public class Game {
                 turn = Piece.Color.WHITE;
             }
         }
-        //Print the winner
-        if (pieces.get(Piece.Type.WHITE_KING)==0) {
-            System.out.println(colorize(colorize("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" +
-                    "\nTHE WHITE KING DIED, BLACKS WIN " +
-                    "\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~",Attribute.BACK_COLOR(0,0,0)),Attribute.TEXT_COLOR(255,255,255)));
-        } else {
-            System.out.println(colorize(colorize("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" +
-                    "\nTHE BLACK KING DIED, WHITES WIN " +
-                    "\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~",Attribute.BACK_COLOR(255,255,255)),Attribute.TEXT_COLOR(0,0,0)));
-        }
+        showWinner();
     }
 
     private static Coordinate getCoordinate(){
@@ -131,6 +135,9 @@ public class Game {
         pieces.put(Piece.Type.BLACK_PAWN,8);
         pieces.put(Piece.Type.WHITE_PAWN,8);
     }
+    public static Map<Piece.Type, Integer> getPieces() {
+        return pieces;
+    }
 
     public static void killPiece(Piece piece) {
         pieces.put(piece.getType(), pieces.get(piece.getType())-1);
@@ -145,6 +152,16 @@ public class Game {
         board.getCells().values().forEach(cell -> cell.removeHighLight());
     }
 
-
+    public static void showWinner() {
+        if (pieces.get(Piece.Type.WHITE_KING)==0) {
+            System.out.println(colorize(colorize("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" +
+                    "\nTHE WHITE KING DIED, BLACKS WIN " +
+                    "\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~",Attribute.BACK_COLOR(0,0,0)),Attribute.TEXT_COLOR(255,255,255)));
+        } else {
+            System.out.println(colorize(colorize("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" +
+                    "\nTHE BLACK KING DIED, WHITES WIN " +
+                    "\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~",Attribute.BACK_COLOR(255,255,255)),Attribute.TEXT_COLOR(0,0,0)));
+        }
+    }
 }
 
