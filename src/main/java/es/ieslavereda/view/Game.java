@@ -2,7 +2,6 @@ package es.ieslavereda.view;
 
 import es.ieslavereda.controller.SaveGame;
 import es.ieslavereda.model.board.Board;
-import es.ieslavereda.model.board.Cell;
 import es.ieslavereda.model.board.Coordinate;
 import es.ieslavereda.model.piece.*;
 import es.ieslavereda.controller.Input;
@@ -11,8 +10,7 @@ import com.diogonunes.jcolor.Attribute;
 
 
 import java.io.IOException;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 public class Game {
 
@@ -24,68 +22,71 @@ public class Game {
         Piece.Color turn = Piece.Color.WHITE;
         Coordinate coord1;
         Coordinate coord2;
-        startBoard();
-        savePieces();
-        while ((pieces.get(Piece.Type.WHITE_KING)>0 && pieces.get(Piece.Type.BLACK_KING)>0)) {
-            try {
-                SaveGame.save(board);
-            } catch (IOException e) {
-                System.out.println("Can't save the game");
-            }
-            do { //Loop in case you cancel the move
-                System.out.println("------------------------\n|     " + turn + "'S TURN     |\n------------------------"); //Print the turn
+        boolean stop=false;
+        startBoard(board); //Start the board
+        savePieces(); //Save the pieces in a map
+        while ((pieces.get(Piece.Type.WHITE_KING)>0 && pieces.get(Piece.Type.BLACK_KING)>0) && !stop) {
+            try { //Try playing or stop if the player says so
+                do { //Loop in case you cancel the move
+                    System.out.println("------------------------\n|     " + turn + "'S TURN     |\n------------------------"); //Print the turn
+                    System.out.println(colorize(colorize("Write 'save' to stop and save the game", Attribute.BACK_COLOR(232, 188, 14)), Attribute.TEXT_COLOR(0,0,0)));
 
-                do { //This won't stop until the coord has a piece, and the color of that piece is the correct one
-                    //Is the coord on the board?
-                    coord1 = getCoordinate();
-                    while (!board.contains(coord1)) { //It is not
-                        System.err.println("This coordinate is not in the board, try again");
+                    do { //This won't stop until the coord has a piece, and the color of that piece is the correct one
+                        //Is the coord on the board?
                         coord1 = getCoordinate();
-                    }
-                    //Now it is
-                    //Is the cell empty?
-                    if (!board.getCellAt(coord1).isEmpty()) { //It is not empty
-                        if (board.getCellAt(coord1).getPiece().getColor() != turn) { //If the piece has the wrong color
-                            System.err.println("This piece is not " + turn.toString().toLowerCase() + ", try with the other color");
+                        while (!board.contains(coord1)) { //It is not
+                            System.err.println("This coordinate is not in the board, try again");
+                            coord1 = getCoordinate();
                         }
-                    } else { //The cell is empty
-                        System.err.println("This cell does not have a piece");
+                        //Now it is
+                        //Is the cell empty?
+                        if (!board.getCellAt(coord1).isEmpty()) { //It is not empty
+                            if (board.getCellAt(coord1).getPiece().getColor() != turn) { //If the piece has the wrong color
+                                System.err.println("This piece is not " + turn.toString().toLowerCase() + ", try with the other color");
+                            }
+                        } else { //The cell is empty
+                            System.err.println("This cell does not have a piece");
+                        }
+                    } while (board.getCellAt(coord1).isEmpty() || board.getCellAt(coord1).getPiece().getColor() != turn);
+                    //Everything is correct
+
+                    highlight(coord1); //Highlight the possible moves
+
+                    do { //Loop until the coord is in the possible moves or until the player cancels de move
+                        coord2 = getCoordinate();
+                        if (!(board.getCellAt(coord1).getPiece().canMoveTo(coord2))) { //If the piece can not move there
+                            System.err.println("The piece can't go there, try another coordinate to move or cancel writing where the piece is");
+                        }
+                    } while (!(board.getCellAt(coord1).getPiece().canMoveTo(coord2)) || board.getCellAt(coord1).getPiece().getColor() != turn);
+                    removeHighLight(); //Remove the movements highlight
+                    if (coord1.equals(coord2)) { //Print in case the player canceled the move
+                        System.out.println(board);
+                        System.out.println(colorize(colorize("Move canceled", Attribute.BACK_COLOR(11, 252, 3)), Attribute.TEXT_COLOR(0,0,0)));
                     }
-                } while (board.getCellAt(coord1).isEmpty() || board.getCellAt(coord1).getPiece().getColor() != turn);
-                //Everything is correct
+                } while (coord1.equals(coord2));
 
-                highlight(coord1); //Highlight the possible moves
+                board.getCellAt(coord1).getPiece().moveTo(coord2); //Move the piece
+                System.out.println(board); // Print the board
 
-                do { //Loop until the coord is in the possible moves or until the player cancels de move
-                    coord2 = getCoordinate();
-                    if (!(board.getCellAt(coord1).getPiece().canMoveTo(coord2))) { //If the piece can not move there
-                        System.err.println("The piece can't go there, try another coordinate to move or cancel writing where the piece is");
-                    }
-                } while (!(board.getCellAt(coord1).getPiece().canMoveTo(coord2)) || board.getCellAt(coord1).getPiece().getColor() != turn);
-                removeHighLight(); //Remove the movements highlight
-                if (coord1.equals(coord2)) {
-                    System.out.println(board);
-                    System.out.println("Movement canceled");
-                }
-            } while (coord1.equals(coord2));
+                //Change turn
+                if (turn.equals(Piece.Color.WHITE)){ turn = Piece.Color.BLACK; } else { turn = Piece.Color.WHITE; }
 
-            board.getCellAt(coord1).getPiece().moveTo(coord2); //Move the piece
-            System.out.println(board); // Print the board
-
-            if (turn.equals(Piece.Color.WHITE)){
-                turn = Piece.Color.BLACK;
-            } else {
-                turn = Piece.Color.WHITE;
+            }catch (NumberFormatException e) { //Catch the game stop and save it
+                SaveGame.save(board);
+                stop = true;
             }
         }
-        showWinner();
+
+        if (!stop){
+            showWinner(); //Show the winner unless the player saved the game
+        }
     }
 
     private static Coordinate getCoordinate(){
         return Input.askCoordinate();
     }
 
-    private static void startBoard() {
+    private static void startNewBoard(Board board) {
         Queen queen1 = new Queen(board,new Coordinate('D',1), Queen.Type.BLACK);
         Queen queen2 = new Queen(board,new Coordinate('D',8), Queen.Type.WHITE);
         King king1 = new King(board,new Coordinate('E',4), King.Type.BLACK);
@@ -121,6 +122,42 @@ public class Game {
         System.out.println(board);
     }
 
+    private static void startBoard(Board board) {
+        String input = Input.newOrLoad();
+        if (input.equals("n")) {
+            startNewBoard(board);
+        }
+        if (input.equals("l")){
+            try {
+                board = SaveGame.load();
+
+            } catch (IOException e) {
+                System.err.println("Can't load the game, creating a new one");
+                startNewBoard(board);
+            }
+        }
+    }
+
+    public static String printPieces() {
+        String aux="";
+        Set<Piece.Type> remaining = new HashSet<>();
+        Set<Piece.Type> deleted = new HashSet<>();
+
+        for (Piece.Type piece : pieces.keySet()) {
+            if (pieces.get(piece)==0) {
+                deleted.add(piece);
+            } else {
+                remaining.add(piece);
+            }
+        }
+        Set<Piece.Type> types = getPiecesTypes();
+        for (Piece.Type piece : types) {
+            aux+="\n\t\t\t"+colorize(colorize(piece.getShape(),Attribute.BACK_COLOR(100,100,100), Attribute.TEXT_COLOR(0,0,0)));
+            aux+="\n\t\t\t"+colorize(colorize(piece.getShape(),Attribute.BACK_COLOR(100,100,100), Attribute.TEXT_COLOR(0,0,0)));
+        }
+        return aux;
+    }
+
     private static void savePieces() {
         pieces.put(Piece.Type.BLACK_QUEEN,1);
         pieces.put(Piece.Type.WHITE_QUEEN,1);
@@ -134,9 +171,6 @@ public class Game {
         pieces.put(Piece.Type.WHITE_BISHOP,2);
         pieces.put(Piece.Type.BLACK_PAWN,8);
         pieces.put(Piece.Type.WHITE_PAWN,8);
-    }
-    public static Map<Piece.Type, Integer> getPieces() {
-        return pieces;
     }
 
     public static void killPiece(Piece piece) {
@@ -162,6 +196,25 @@ public class Game {
                     "\nTHE BLACK KING DIED, WHITES WIN " +
                     "\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~",Attribute.BACK_COLOR(255,255,255)),Attribute.TEXT_COLOR(0,0,0)));
         }
+    }
+
+    private static Set<Piece.Type> getPiecesTypes(){
+        Set<Piece.Type> types = new HashSet<>();
+        for (int i = 0; i < 8; i++) {
+            types.add(Piece.Type.BLACK_PAWN);
+            types.add(Piece.Type.WHITE_PAWN);
+            types.add(Piece.Type.BLACK_BISHOP);
+            types.add(Piece.Type.WHITE_BISHOP);
+            types.add(Piece.Type.BLACK_KING);
+            types.add(Piece.Type.WHITE_KING);
+            types.add(Piece.Type.BLACK_KNIGHT);
+            types.add(Piece.Type.WHITE_KNIGHT);
+            types.add(Piece.Type.BLACK_QUEEN);
+            types.add(Piece.Type.WHITE_QUEEN);
+            types.add(Piece.Type.BLACK_ROOK);
+            types.add(Piece.Type.WHITE_ROOK);
+        }
+        return types;
     }
 }
 

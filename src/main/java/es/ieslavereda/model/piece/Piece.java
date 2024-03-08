@@ -6,11 +6,12 @@ import es.ieslavereda.model.board.Cell;
 import es.ieslavereda.model.board.Coordinate;
 import es.ieslavereda.view.Game;
 
+import java.io.Serializable;
 import java.util.Set;
 
 import static com.diogonunes.jcolor.Ansi.colorize;
 
-public abstract class Piece {
+public abstract class Piece implements Serializable {
     private Type type;
     private Cell cell;
 

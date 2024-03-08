@@ -1,8 +1,9 @@
 package es.ieslavereda.model.board;
 
+import java.io.Serializable;
 import java.util.Objects;
 
-public class Coordinate {
+public class Coordinate implements Serializable {
 
     private char letter;
     private int number;
