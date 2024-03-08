@@ -24,6 +24,7 @@ public class Board implements Serializable {
             }
         }
         deleted = new DeletedPieceManagerListImp();
+        remaining = new DeletedPieceManagerListImp();
     }
 
     public DeletedPieceManagerListImp getDeleted() {
@@ -81,7 +82,7 @@ public class Board implements Serializable {
         for (Piece.Type type : Piece.Type.values()) {
             aux+=colorize(colorize(" "+type.getShape()+" ",Cell.Color.BLACK.getAttribute(), Attribute.TEXT_COLOR(255,255,255)));
         }
-
+        aux+="\n\t\t\t\t"+deleted.toString();
         return aux;
     }
 

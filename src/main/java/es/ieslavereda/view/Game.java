@@ -13,13 +13,12 @@ import com.diogonunes.jcolor.Attribute;
 
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.*;
 
 public class Game implements Serializable {
 
     private static DeletedPieceManagerListImp pieces;
     private static Board board;
-    private static Piece.Color turn;
+    private  Piece.Color turn;
 
     public Game(){
         board = new Board();
@@ -28,26 +27,27 @@ public class Game implements Serializable {
         board.setRemaining(pieces);
         turn = Piece.Color.WHITE;
     }
-    public static Piece.Color getTurn() {
+    public  Piece.Color getTurn() {
         return turn;
     }
-    public static Board getBoard() {
+    public  Board getBoard() {
         return board;
     }
-    public static DeletedPieceManagerListImp getPieces() {
+    public  DeletedPieceManagerListImp getPieces() {
         return pieces;
     }
 
-
-    public static void setBoard(Board board) {
+    public void setBoard(Board board) {
         Game.board = board;
     }
 
-    public static void start(){
+    public void start(){
         Coordinate coord1;
         Coordinate coord2;
         boolean stop=false;
-        Game game = startBoard();
+        startBoard();
+        System.out.println(board);
+        Game game = new Game();
         Piece.Color turn = getTurn();
         while (board.kingsAlive() && !stop) { //Loop while both kings are alive
             try { //Try playing or stop if the player says so
@@ -101,7 +101,7 @@ public class Game implements Serializable {
 
 
             }catch (NumberFormatException e) { //Catch the game stop and save it
-                SaveGame.save(game);
+                SaveGame.save(this);
                 stop = true;
             }
         }
@@ -115,7 +115,7 @@ public class Game implements Serializable {
         return Input.askCoordinate();
     }
 
-    private static Board startNewBoard() {
+    private static void startNewBoard() {
         pieces.addPiece(new Queen(board,new Coordinate('D',1), Queen.Type.BLACK));
         pieces.addPiece(new Queen(board,new Coordinate('D',8), Queen.Type.WHITE));
         pieces.addPiece(new King(board,new Coordinate('E',1), King.Type.BLACK));
@@ -148,9 +148,6 @@ public class Game implements Serializable {
         pieces.addPiece(new Pawn(board,new Coordinate('F',7),Pawn.Type.WHITE));
         pieces.addPiece(new Pawn(board,new Coordinate('G',7),Pawn.Type.WHITE));
         pieces.addPiece(new Pawn(board,new Coordinate('H',7),Pawn.Type.WHITE));
-        System.out.println(board);
-
-        return board;
     }
 
     private static Game startBoard() {
