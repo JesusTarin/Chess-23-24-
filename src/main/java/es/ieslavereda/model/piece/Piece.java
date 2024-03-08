@@ -60,6 +60,7 @@ public abstract class Piece implements Serializable {
         return coordinates.contains(coordinate);
     }
 
+
     public void remove(){
         if(cell != null){
             cell.setPiece(null);

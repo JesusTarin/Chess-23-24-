@@ -149,6 +149,7 @@ public class Game implements Serializable {
         pieces.addPiece(new Pawn(board,new Coordinate('G',7),Pawn.Type.WHITE));
         pieces.addPiece(new Pawn(board,new Coordinate('H',7),Pawn.Type.WHITE));
         System.out.println(board);
+
         return board;
     }
 
