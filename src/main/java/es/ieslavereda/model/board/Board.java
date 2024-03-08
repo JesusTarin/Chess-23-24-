@@ -1,7 +1,8 @@
 package es.ieslavereda.model.board;
 
 import com.diogonunes.jcolor.Attribute;
-import es.ieslavereda.view.Game;
+import es.ieslavereda.model.DeletedPieceManagerListImp;
+import es.ieslavereda.model.piece.Piece;
 
 import java.io.Serializable;
 import java.util.*;
@@ -12,6 +13,8 @@ import static com.diogonunes.jcolor.Ansi.colorize;
 public class Board implements Serializable {
 
     private Map<Coordinate, Cell> cells;
+    private DeletedPieceManagerListImp remaining;
+    private DeletedPieceManagerListImp deleted;
 
     public Board() {
         cells = new HashMap<>();
@@ -20,6 +23,19 @@ public class Board implements Serializable {
                 cells.put(new Coordinate(col, row), new Cell(this, new Coordinate(col, row)));
             }
         }
+        deleted = new DeletedPieceManagerListImp();
+    }
+
+    public DeletedPieceManagerListImp getDeleted() {
+        return deleted;
+    }
+
+    public DeletedPieceManagerListImp getRemaining() {
+        return remaining;
+    }
+
+    public void setRemaining(DeletedPieceManagerListImp remaining) {
+        this.remaining = remaining;
     }
 
     public boolean contains(Coordinate c) {
@@ -47,6 +63,28 @@ public class Board implements Serializable {
         cells.values().stream().forEach(cell -> cell.removeHighLight());
     }
 
+    public boolean kingsAlive() {
+        if (remaining.count(Piece.Type.BLACK_KING) == 0 || remaining.count(Piece.Type.BLACK_KING) == 0) {
+            return false;
+        }
+        return true;
+    }
+
+    private String printPieces() {
+        String aux="";
+        aux+="\n\t\t\t\t   REMAINING PIECES\n\t\t ";
+        for (Piece.Type type : Piece.Type.values()) {
+            aux+=colorize(colorize(" "+type.getShape()+" ",Cell.Color.BLACK.getAttribute(), Attribute.TEXT_COLOR(255,255,255)));
+        }
+        aux+="\n\t\t\t\t"+remaining.toString();
+        aux+="\n\t\t\t\t    DELETED PIECES\n\t\t ";
+        for (Piece.Type type : Piece.Type.values()) {
+            aux+=colorize(colorize(" "+type.getShape()+" ",Cell.Color.BLACK.getAttribute(), Attribute.TEXT_COLOR(255,255,255)));
+        }
+
+        return aux;
+    }
+
     @Override
     public String toString() {
         String aux = "\t\t\t"+colorize(colorize("    A  B  C  D  E  F  G  H    ", Attribute.BACK_COLOR(0,0,0)), Attribute.TEXT_COLOR(255,255,255))+"\n";
@@ -59,7 +97,7 @@ public class Board implements Serializable {
             aux += colorize(colorize(" " + row + " ", Attribute.BACK_COLOR(0,0,0)), Attribute.TEXT_COLOR(255,255,255))+"\n";
         }
         aux += "\t\t\t"+colorize(colorize("    A  B  C  D  E  F  G  H    ", Attribute.BACK_COLOR(0,0,0)), Attribute.TEXT_COLOR(255,255,255));
-        aux += Game.printPieces();
+        aux += printPieces();
         return aux;
     }
 }

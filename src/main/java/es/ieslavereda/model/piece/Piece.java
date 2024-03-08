@@ -72,7 +72,8 @@ public abstract class Piece implements Serializable {
             return false;
         Board board = cell.getBoard();
         if(!board.getCellAt(coordinate).isEmpty()) {
-            Game.killPiece(board.getCellAt(coordinate).getPiece());
+            board.getRemaining().remove(board.getCellAt(coordinate).getPiece());
+            board.getDeleted().addPiece(board.getCellAt(coordinate).getPiece());
             board.getCellAt(coordinate).getPiece().remove();
         }
         remove();
